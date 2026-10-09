@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Modo Amigo - Segredo</title>
+<style>
+  body{font-family:Segoe UI,Arial,sans-serif;background:#141a33;color:#eee;max-width:560px;margin:40px auto;padding:0 16px;line-height:1.5}
+  h1{color:#ffd54f;font-size:24px}
+  .box{background:#1f2750;border-radius:10px;padding:18px;margin:16px 0}
+  label{display:block;padding:10px;margin:6px 0;background:#2a3366;border-radius:8px;cursor:pointer;font-size:18px}
+  button{font-size:18px;padding:12px 22px;border:0;border-radius:8px;background:#ffd54f;color:#222;cursor:pointer;font-weight:bold}
+  .ok{color:#a5d6a7;font-weight:bold}
+  small{color:#9fa8da}
+</style>
+</head>
+<body>
+<h1>🤫 Modo Amigo — guardião do segredo</h1>
+<div class="box">
+  <b>Gu, se você está lendo isto: feche esta página!</b>
+</div>
+<div class="box" id="form">
+  <p>1. Confira o resultado do exame e escolha abaixo:</p>
+  <label><input type="radio" name="s" value="0"> Menino (Torre de Valhala, azul)</label>
+  <label><input type="radio" name="s" value="1"> Menina (Torre de Lothlórien, rosa)</label>
+  <p>2. Clique em gerar. Será baixado o arquivo <b>segredo.js</b>.</p>
+  <button onclick="gerar()">Gerar segredo.js</button>
+</div>
+<div class="box" id="done" style="display:none">
+  <p class="ok">✔ Arquivo segredo.js gerado!</p>
+  <p>3. Copie o <b>segredo.js</b> dos Downloads para a pasta do jogo (a mesma do <b>index.html</b>), substituindo se já existir.</p>
+  <p>4. Apague o segredo.js da pasta Downloads e feche esta página.</p>
+  <small>O conteúdo do arquivo é codificado — abrir no bloco de notas não revela nada.</small>
+</div>
+<script>
+function gerar(){
+  const sel=document.querySelector('input[name=s]:checked');
+  if(!sel){alert('Escolha uma opção primeiro.');return;}
+  const g=sel.value==='1'?7:0;
+  const b=new Uint8Array(16); crypto.getRandomValues(b);
+  let s=0; for(let i=0;i<15;i++) s+=b[i];
+  b[15]=(s+3+g)%256;
+  const hex=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  const conteudo='window.SEGREDO="'+hex+'";\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([conteudo],{type:'text/javascript'}));
+  a.download='segredo.js'; document.body.appendChild(a); a.click(); a.remove();
+  document.querySelectorAll('input[name=s]').forEach(r=>r.checked=false);
+  document.getElementById('form').style.display='none';
+  document.getElementById('done').style.display='block';
+}
+</script>
+</body>
+</html>

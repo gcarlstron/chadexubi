@@ -1,0 +1,18 @@
+O DESAFIO DAS DUAS TORRES - Gu & De
+===================================
+
+COMO JOGAR
+- Clique duas vezes em JOGAR.bat (abre em tela cheia). Para sair: Alt+F4.
+- Controle 8BitDo: use no modo XInput (Windows). Ligue segurando START + X.
+- Analógico/D-pad: andar | A ou B: atacar | Y, X, LB ou RB: trocar herói | START: pausa
+- Teclado: setas/WASD, Espaço ataca, Q ou Tab troca, Enter pausa.
+
+PARA O AMIGO (guardião do segredo)
+1. Abra segredo.html, escolha o resultado e clique em "Gerar segredo.js".
+2. Copie o segredo.js baixado para esta pasta (junto do index.html).
+3. Apague o segredo.js dos Downloads.
+Sem o segredo.js o jogo funciona, mas a torre não abre no final.
+
+TESTES (sem revelar nada)
+- index.html?teste=menino  ou  index.html?teste=menina  -> força um final
+- acrescente &pular=1 para começar já com as 3 relíquias
