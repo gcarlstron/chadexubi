@@ -1,88 +1,9 @@
 'use strict';
 // =====================================================================
-//  gfx.js — canvas, utilitarios, sprites e temas de tiles
+//  gfx/tiles.js — temas (floresta, neve, vulcao) e imagens 16x16 dos tiles
+//  TILESETS[tema].<nome> -> canvas. O comportamento de cada tile fica em
+//  world/tiles.js (registro defineTile).
 // =====================================================================
-const VW = 320, VH = 180, TS = 16;
-const params = new URLSearchParams(location.search);
-
-const cv = document.getElementById('game');
-const out = cv.getContext('2d');
-const buf = document.createElement('canvas'); buf.width = VW; buf.height = VH;
-const ctx = buf.getContext('2d');
-let S = 1, OX = 0, OY = 0;
-function resize() {
-  cv.width = innerWidth; cv.height = innerHeight;
-  let s = Math.min(innerWidth / VW, innerHeight / VH);
-  if (s >= 1) s = Math.floor(s);
-  S = s; OX = Math.floor((innerWidth - VW * S) / 2); OY = Math.floor((innerHeight - VH * S) / 2);
-}
-addEventListener('resize', resize); resize();
-
-function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-const rnd = Math.random;
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
-function overlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
-
-// ---------------- sprites ----------------
-const PAL = {
-  k: '#1a1a2e', s: '#f2c39b', S: '#d49a6a', h: '#d9772b', H: '#a8501a', g: '#c8d0d8', G: '#7a8490', w: '#f4ead2',
-  b: '#3a6fd8', B: '#23468f', n: '#7a4a2a', N: '#4f2e18', y: '#f5d76e', Y: '#c9a640', p: '#e85a9c', P: '#a83470',
-  e: '#4caf50', E: '#2e7d32', W: '#ffffff', r: '#e53935', v: '#7e57c2', V: '#4527a0', c: '#263238', C: '#455a64', o: '#ffb300',
-  q: '#8bc34a', Q: '#558b2f', u: '#795548', U: '#4e342e', m: '#9e9e9e', i: '#64b5f6', I: '#1e88e5',
-};
-function mkSprite(rows, pal = PAL) {
-  const c = document.createElement('canvas'); c.width = rows[0].length; c.height = rows.length;
-  const x = c.getContext('2d');
-  rows.forEach((row, j) => { [...row].forEach((ch, i) => { if (ch !== '.' && pal[ch]) { x.fillStyle = pal[ch]; x.fillRect(i, j, 1, 1); } }); });
-  return c;
-}
-function flipC(c) { const f = document.createElement('canvas'); f.width = c.width; f.height = c.height; const x = f.getContext('2d'); x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(c, 0, 0); return f; }
-function whiteC(c) { const f = document.createElement('canvas'); f.width = c.width; f.height = c.height; const x = f.getContext('2d'); x.drawImage(c, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); return f; }
-function scaleC(c, k) { const f = document.createElement('canvas'); f.width = c.width * k; f.height = c.height * k; const x = f.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(c, 0, 0, f.width, f.height); return f; }
-
-const SPR = {};
-SPR.gu = mkSprite([
-  '..w..........w..', '..ww.kkkkkk.ww..', '...wkggggggkw...', '....kGGGGGGk....', '....kssssssk....', '....kskssksk....',
-  '....khsssshk....', '...khhhhhhhhk...', '..kbbkhhhhkbbk..', '.kbbbbkhhkbbbbk.', '.ksbbbbbbbbbbsk.', '.kskNNNNNNNNksk.',
-  '..kkBBBBBBBBkk..', '...kBBBkkBBBk...', '...knnnk.knnnk..', '...kkkkk.kkkkk..']);
-SPR.de = mkSprite([
-  '................', '.....kkkkkk.....', '....kyyyyyyk....', '...kyyyyyyyyk...', '..kyyssssssyyk..', '.skyskssssksyks.',
-  '..kysssppsssyk..', '..kyyksssskyyk..', '.kyypkeeeekpyyk.', '.kyppeeeeeeppyk.', '.kppseeeeeespPk.', '.kpPkNNNNNNkpPk.',
-  '..kPPEEEEEEPPk..', '...kPEEkkEEPk...', '....knnk.knnk...', '....kkkk.kkkk...']);
-const SLIME = ['................', '................', '................', '................', '................', '................',
-  '......kkkk......', '....kkeeeekk....', '...keeeeeeeek...', '..keeWeeeeWeek..', '..keekeeeekeek..', '.keeeeeeeeeeeek.',
-  '.keEEEEEEEEEEek.', '.kEEEEEEEEEEEEk.', '..kkkkkkkkkkkk..', '................'];
-SPR.slime = mkSprite(SLIME);
-SPR.slimeI = mkSprite(SLIME, Object.assign({}, PAL, { e: '#81d4fa', E: '#0288d1' }));
-SPR.slimeF = mkSprite(SLIME, Object.assign({}, PAL, { e: '#ff8a65', E: '#d84315' }));
-SPR.skel = mkSprite([
-  '................', '.....kkkkkk.....', '....kWWWWWWk....', '...kWWWWWWWWk...', '...kWkkWWkkWk...', '...kWkrWWkrWk...',
-  '...kWWWkkWWWk...', '....kWkWkWkk....', '.....kkkkkk.....', '...kkWkWWkWkk...', '..kW.kWWWWk.Wk..', '..kW.kWkkWk.Wk..',
-  '.....kWWWWk.....', '.....kWkkWk.....', '.....kWk.kWk....', '....kkkk.kkkk...']);
-const ORC = [
-  '................', '.....kkkkkk.....', '....kQQQQQQk....', '...kQqqqqqqQk...', '...kqrkqqkrqk...', '...kqqqqqqqqk...',
-  '...kqWkkkkWqk...', '....kqqqqqqk....', '..kUUkqqqqkUUk..', '.kUuuUkkkkUuuUk.', '.kqUuuuuuuuuUqk.', '.kqkUUUUUUUUkqk.',
-  '..kkUuuuuuuUkk..', '...kUuukkuuUk...', '...kUUk..kUUk...', '...kkkk..kkkk...'];
-SPR.orc = mkSprite(ORC);
-SPR.boss = scaleC(mkSprite(ORC, Object.assign({}, PAL, { q: '#7cb342', Q: '#33691e', u: '#5d4037', U: '#3e2723' })), 2);
-SPR.bat = mkSprite([
-  '................', '................', '................', '................', '................',
-  'kvvk...kk...kvvk', 'kvvvk.kvvk.kvvvk', '.kvvvkvrrvkvvvk.', '..kvvvvvvvvvvk..', '...kk.kvvk.kk...', '.......kk.......',
-  '................', '................', '................', '................', '................']);
-SPR.crow = mkSprite([
-  '................', '................', '................', '......kkkk......', '.....kcccck.....', '....kcWkccck....',
-  '..ookccccccck...', '....kcccccccck..', '...kcCCCCccccck.', '..kcCCCCCCcccck.', '...kCCCCCCccck..', '....kkkkkkkkk...',
-  '.....o..o.......', '................', '................', '................']);
-SPR.heart = mkSprite(['.kk.kk.', 'krrkrrk', 'krrrrrk', '.krrrk.', '..krk..', '...k...']);
-SPR.heartE = mkSprite(['.kk.kk.', 'k..k..k', 'k.....k', '.k...k.', '..k.k..', '...k...']);
-SPR.heartC = mkSprite(['.oo..oo.', 'orrooRro', 'orrrrrro', 'orrrrrro', '.orrrro.', '..orro..', '...oo...'], Object.assign({}, PAL, { R: '#ffcdd2' }));
-SPR.key = mkSprite(['..kkk.....', '.koook....', 'kook.ok...', 'kok..okkkk', 'kook.ooooo', '.koooko.ok', '..kkk.k..k'], Object.assign({}, PAL, { o: '#ffd54f' }));
-SPR.chupeta = mkSprite(['...kkkk...', '..kWWWWk..', '..kW..Wk..', '...kWWk...', 'kkkkWWkkkk', 'kppppppppk', 'kpPpWWpPpk', '.kppppppk.', '..kkWWkk..', '....kk....'], Object.assign({}, PAL, { p: '#ffd54f', P: '#f9a825' }));
-SPR.scroll = mkSprite(['.kkkkkkkkkk.', 'kwwwwwwwwwwk', 'kNwwwwwwwwNk', '.kwkkkkkwwk.', '.kwwwwwwwwk.', '.kwkkkkwwwk.', '.kwwwwwwwwk.', 'kNwwwwwwwwNk', 'kwwwwwwwwwwk', '.kkkkkkkkkk.']);
-for (const k of ['gu', 'de', 'slime', 'slimeI', 'slimeF', 'skel', 'orc', 'bat', 'crow', 'boss']) { SPR[k + 'L'] = flipC(SPR[k]); SPR[k + 'W'] = whiteC(SPR[k]); SPR[k + 'LW'] = whiteC(SPR[k + 'L']); }
-
-// ---------------- tiles por tema ----------------
 function tileCanvas(draw, w = TS, h = TS) { const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); draw(g); return c; }
 function px(g, x, y, col) { g.fillStyle = col; g.fillRect(x, y, 1, 1); }
 function specks(g, r, n, col, w = 16, h = 16) { for (let i = 0; i < n; i++) px(g, (r() * w) | 0, (r() * h) | 0, col); }

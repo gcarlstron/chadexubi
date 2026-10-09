@@ -3,16 +3,34 @@ O DESAFIO DAS DUAS TORRES - Gu & De
 
 COMO JOGAR
 - Clique duas vezes em JOGAR.bat (abre em tela cheia). Para sair: Alt+F4.
+- No menu, escolha:
+    1 JOGADOR            um controle, trocando de herói (Y/X/LB/RB)
+    2 JOGADORES          Gu no controle, De no teclado (ou o contrário)
 - Controle 8BitDo: use no modo XInput (Windows). Ligue segurando START + X.
-- Analógico/D-pad: andar | A ou B: atacar | Y, X, LB ou RB: trocar herói | START: pausa
-- Teclado: setas/WASD, Espaço ataca, Q ou Tab troca, Enter pausa.
+    Analógico/D-pad: andar | A ou B: atacar | Y, X, LB ou RB: trocar herói (1P) / chamar parceiro (2P) | START: pausa
+- Teclado (2 jogadores): setas andam, K ou Enter ataca, L chama o parceiro, Esc pausa.
+  Sem controle conectado: Gu = WASD + Espaço + Q | De = setas + K + L
+
+HERÓIS
+- Gu (viking): machado. Quebra pedras, arbustos e paredes rachadas (segredos!). Bate em alavancas.
+- De (elfa): arco. Acerta cristais de longe e quebra escudos mágicos.
+
+FASES
+1. A Floresta das Duas Torres
+2. As Montanhas Geladas
+3. A Fortaleza dos Orcs
+Ache as 5 chupetas douradas escondidas!
 
 PARA O AMIGO (guardião do segredo)
 1. Abra segredo.html, escolha o resultado e clique em "Gerar segredo.js".
 2. Copie o segredo.js baixado para esta pasta (junto do index.html).
 3. Apague o segredo.js dos Downloads.
 Sem o segredo.js o jogo funciona, mas a torre não abre no final.
+O segredo.js está no .gitignore e nunca vai para o git.
 
 TESTES (sem revelar nada)
 - index.html?teste=menino  ou  index.html?teste=menina  -> força um final
-- acrescente &pular=1 para começar já com as 3 relíquias
+- acrescente &fase=2 ou &fase=3 para começar direto numa fase
+
+DESENVOLVIMENTO
+- Veja ARQUITETURA.md (pastas, registros de tiles/inimigos/itens/fases).

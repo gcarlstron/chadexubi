@@ -12,9 +12,37 @@
 <canvas id="game"></canvas>
 <!-- Arquivo gerado pelo amigo (segredo.html). Se nao existir, o jogo avisa no final. -->
 <script src="segredo.js" onerror="window.SEGREDO=null"></script>
-<script src="gfx.js"></script>
-<script src="audio.js"></script>
-<script src="levels.js"></script>
-<script src="game.js"></script>
+<!-- Ordem importa: cada arquivo usa o que foi carregado antes (ver ARQUITETURA.md) -->
+<script src="js/core/util.js"></script>
+<script src="js/core/canvas.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/core/input.js"></script>
+<script src="js/gfx/sprites.js"></script>
+<script src="js/gfx/tiles.js"></script>
+<script src="js/gfx/draw.js"></script>
+<script src="js/world/state.js"></script>
+<script src="js/world/tiles.js"></script>
+<script src="js/world/collision.js"></script>
+<script src="js/world/level.js"></script>
+<script src="js/mechanics/breakables.js"></script>
+<script src="js/mechanics/crystals.js"></script>
+<script src="js/mechanics/levers.js"></script>
+<script src="js/mechanics/plates.js"></script>
+<script src="js/mechanics/locks.js"></script>
+<script src="js/mechanics/signs.js"></script>
+<script src="js/mechanics/items.js"></script>
+<script src="js/entities/heroes.js"></script>
+<script src="js/entities/enemies.js"></script>
+<script src="js/entities/boss.js"></script>
+<script src="js/entities/crow.js"></script>
+<script src="js/story/dialog.js"></script>
+<script src="js/story/cutscene.js"></script>
+<script src="js/story/towers.js"></script>
+<script src="js/levels/fase1.js"></script>
+<script src="js/levels/fase2.js"></script>
+<script src="js/levels/fase3.js"></script>
+<script src="js/ui/hud.js"></script>
+<script src="js/ui/screens.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

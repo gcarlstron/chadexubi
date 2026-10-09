@@ -1,6 +1,7 @@
 'use strict';
 // =====================================================================
-//  audio.js — efeitos e musicas sintetizadas (WebAudio)
+//  core/audio.js — efeitos (SFX) e musicas (SONGS) sintetizados com WebAudio
+//  Para nova musica: adicione em SONGS e chame playSong('nome').
 // =====================================================================
 let AC = null, master = null;
 function audioInit() {
