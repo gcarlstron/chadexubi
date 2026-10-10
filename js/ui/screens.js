@@ -21,7 +21,6 @@ function drawPause() {
   const L1 = mode === 1 ? ['Controle: analógico anda, A/B ataca, Y/X troca de herói', 'Teclado: setas/WASD, Espaço ataca, Q troca'] :
     ['Controle: analógico anda, A/B ataca, Y/X chama o parceiro', 'Teclado: setas anda, K/Enter ataca, L chama o parceiro'];
   L1.concat(['Gu: machado quebra pedras, arbustos e paredes rachadas', 'De: flecha acerta cristais e quebra escudos mágicos', 'START / Esc: continuar']).forEach((s, i) => txt(s, VW / 2, 56 + i * 15, 6, '#fff', 'center'));
-  txt('Chupetas douradas: ' + chupetas + '/' + TOTAL_CHUPETAS, VW / 2, 150, 7, '#fff59d', 'center');
 }
 function drawReveal() {
   const boy = RESULT === 0;
@@ -33,8 +32,10 @@ function drawReveal() {
   R(0, 158, VW, 22, '#3f7a2c'); R(0, 158, VW, 2, '#5aa83c');
   const jb = o => Math.abs(Math.sin(time * 5 + o)) * 10;
   ctx.drawImage(SPR.gu, VW / 2 - 60, 143 - jb(0)); ctx.drawImage(SPR.deL, VW / 2 + 44, 143 - jb(1.2));
-  drawBaby(VW / 2, 146 - Math.abs(Math.sin(time * 3)) * 3, boy ? '#64b5f6' : '#f48fb1', boy ? '#1e88e5' : '#ec407a');
+  const happy = chupetas >= TOTAL_CHUPETAS; // achou todas -> bebe feliz de chupeta; senao chora
+  drawBaby(VW / 2, 146 - (happy ? Math.abs(Math.sin(time * 3)) * 3 : 0), boy ? '#64b5f6' : '#f48fb1', boy ? '#1e88e5' : '#ec407a', happy ? 'happy' : 'cry');
   if (revealT > 1.0) { const k = Math.min(1, (revealT - 1.0) / 0.5), sc = 1 + 0.25 * Math.sin(k * Math.PI) + 0.03 * Math.sin(time * 4); txt(boy ? 'É MENINO!' : 'É MENINA!', VW / 2, 18, 28 * sc, boy ? '#64b5f6' : '#f48fb1', 'center', '#fff'); }
   if (revealT > 2.5) txt(boy ? 'Um pequeno guerreiro de Valhala está a caminho!' : 'Uma pequena guerreira de Lothlórien está a caminho!', VW / 2, 52, 7, '#fff', 'center', '#000');
-  if (revealT > 4) txt('Chupetas douradas encontradas: ' + chupetas + '/' + TOTAL_CHUPETAS, VW / 2, 166, 6, '#fff59d', 'center', '#000');
+  if (revealT > 4 && !happy) { R(VW / 2 + 10, 118, 34, 12, '#fff'); tri(VW / 2 + 12, 130, VW / 2 + 18, 130, VW / 2 + 8, 136, '#fff'); txt('Buááá!', VW / 2 + 27, 120, 6, '#1e88e5', 'center'); }
+  if (revealT > 4 && happy) for (let i = 0; i < 3; i++) { const t = (time * 0.6 + i / 3) % 1; ctx.globalAlpha = 1 - t; ctx.drawImage(SPR.heart, Math.round(VW / 2 - 12 + i * 10), Math.round(132 - t * 30)); ctx.globalAlpha = 1; }
 }

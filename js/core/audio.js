@@ -49,6 +49,7 @@ const SFX = {
   crow: () => { tone(900, 0.12, 'sawtooth', 0.1, 0, 0.6); tone(800, 0.15, 'sawtooth', 0.1, 0.16, 0.5); },
   portal: () => [392, 523, 659, 784, 1047].forEach((f, i) => tone(f, 0.3, 'sine', 0.1, i * 0.08)),
   boss: () => { tone(110, 0.5, 'sawtooth', 0.15, 0, 0.5); noise(0.4, 0.2, 0, 200); },
+  cry: () => { tone(620, 0.35, 'sawtooth', 0.05, 0, 0.75); tone(560, 0.45, 'sawtooth', 0.05, 0.4, 0.7); },
   shield: () => tone(1500, 0.2, 'square', 0.08, 0, 1.5),
 };
 const midi = n => 440 * Math.pow(2, (n - 69) / 12);

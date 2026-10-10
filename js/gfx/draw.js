@@ -30,11 +30,23 @@ function drawGem(x, y, col) {
 function drawPortal(x, y) {
   for (let i = 0; i < 4; i++) { ctx.strokeStyle = ['#7c4dff', '#b388ff', '#e1bee7', '#fff'][i]; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x, y, Math.max(1, 7 - i * 1.5 + Math.sin(time * 6 + i) * 0.8), Math.max(1, 7 - i * 1.5), time * 2 + i, 0, Math.PI * 2); ctx.stroke(); }
 }
-function drawBaby(x, y, col, col2) {
+// mood: 'happy' (com chupeta) | 'cry' (chorando, lagrimas) | outro = normal
+function drawBaby(x, y, col, col2, mood) {
   x = Math.round(x); y = Math.round(y);
+  const shake = mood === 'cry' ? Math.round(Math.sin(time * 30)) : 0; x += shake;
   ctx.fillStyle = col2; ctx.beginPath(); ctx.ellipse(x, y + 6, 10, 7, 0, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(x, y + 5, 9, 6, 0, 0, Math.PI * 2); ctx.fill();
-  disc(ctx, x, y - 2, 5, '#f2c39b'); R(x - 3, y - 2, 2, 1, '#1a1a2e'); R(x + 2, y - 2, 2, 1, '#1a1a2e'); R(x - 1, y + 1, 2, 1, '#e57373');
+  disc(ctx, x, y - 2, 5, mood === 'cry' ? '#f4a99b' : '#f2c39b');
+  if (mood === 'cry') {
+    R(x - 4, y - 3, 3, 1, '#1a1a2e'); R(x + 2, y - 3, 3, 1, '#1a1a2e');                 // olhos apertados
+    R(x - 2, y, 4, 3, '#8e2430'); R(x - 1, y + 1, 2, 1, '#e57373');                       // boca aberta
+    for (let i = 0; i < 2; i++) { const t = (time * 1.5 + i * 0.5) % 1; R(x - 5 - t * 4, y - 2 + t * 10, 1, 2, '#81d4fa'); R(x + 5 + t * 4, y - 2 + t * 10, 1, 2, '#81d4fa'); } // lagrimas
+    if (Math.floor(time * 2) % 4 === 0 && !drawBaby.cried) { drawBaby.cried = true; SFX.cry && SFX.cry(); } else if (Math.floor(time * 2) % 4 !== 0) drawBaby.cried = false;
+  } else {
+    R(x - 3, y - 2, 2, 1, '#1a1a2e'); R(x + 2, y - 2, 2, 1, '#1a1a2e');
+    if (mood === 'happy') { R(x - 3, y + 1, 6, 2, '#ffd54f'); R(x - 1, y + 3, 2, 1, '#f9a825'); R(x - 4, y - 3, 1, 1, '#f48fb1'); R(x + 4, y - 3, 1, 1, '#f48fb1'); } // chupeta dourada + bochechas
+    else R(x - 1, y + 1, 2, 1, '#e57373');
+  }
   ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(x, y - 6, 6, 3, 0, Math.PI, 0); ctx.fill();
 }
 // Torre 0 = Valhala (azul) | 1 = Lothlorien (rosa). (px,py) = canto do pe da torre (5x6 tiles)

@@ -1,11 +1,11 @@
 'use strict';
 // =====================================================================
-//  ui/hud.js — coracoes, chupetas, chaves, reliquias, retrato, chefao, avisos
+//  ui/hud.js — coracoes, chaves, reliquias, retrato, chefao, avisos
 // =====================================================================
 function drawHUD() {
   for (let i = 0; i < maxH; i++) ctx.drawImage(i < hearts ? SPR.heart : SPR.heartE, 4 + i * 9, 4);
-  ctx.drawImage(SPR.chupeta, 4, 13); txt('x' + chupetas, 16, 14, 6, '#fff59d');
-  if (LV.n > 1) { ctx.drawImage(SPR.key, 34, 15); txt('x' + keysHeld, 46, 14, 6, '#ffd54f'); }
+  // chupetas NAO aparecem no HUD (segredo: so se descobre no final)
+  if (LV.n > 1) { ctx.drawImage(SPR.key, 4, 15); txt('x' + keysHeld, 16, 14, 6, '#ffd54f'); }
   if (LV.n === 1) for (let i = 0; i < 3; i++) { const x = VW / 2 - 18 + i * 14; R(x - 1, 2, 12, 12, '#101833'); R(x, 3, 10, 10, '#26305a'); if (flags['relic' + i]) drawGem(x + 5, 8, RELIC_COL[i]); }
   if (mode === 1) {
     const h = L(), f = F();

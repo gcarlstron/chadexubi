@@ -55,7 +55,8 @@ function buildFase1() {
     intro: ['Num reino distante, uma nova vida está a caminho...',
       'Duas torres guardam o grande segredo: Valhala, a torre azul, e Lothlórien, a torre rosa.',
       'Só quem reunir as 3 relíquias sagradas e levá-las ao altar verá qual delas vai se abrir.',
-      'Gu, o viking, quebra pedras e arbustos com seu machado. De, a elfa, acerta alvos distantes com seu arco.'],
+      'Gu, o viking, quebra pedras e arbustos com seu machado. De, a elfa, acerta alvos distantes com seu arco.',
+      'Dizem também que há chupetas douradas escondidas pelo reino... o bebê vai querer todas!'],
   };
 }
 

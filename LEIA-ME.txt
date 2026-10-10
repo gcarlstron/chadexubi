@@ -19,7 +19,7 @@ FASES
 1. A Floresta das Duas Torres
 2. As Montanhas Geladas
 3. A Fortaleza dos Orcs
-Ache as 5 chupetas douradas escondidas!
+Há chupetas douradas escondidas pelo caminho... se faltar alguma, o bebê chora no final!
 
 PARA O AMIGO (guardião do segredo)
 1. Abra segredo.html, escolha o resultado e clique em "Gerar segredo.js".

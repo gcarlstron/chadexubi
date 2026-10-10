@@ -29,7 +29,7 @@ defineItem('key', {
 });
 defineItem('chupeta', {
   draw: (it, x, y) => { glow(x, y, '#fff59d'); ctx.drawImage(SPR.chupeta, Math.round(x - 5), Math.round(y - 5)); },
-  pickup: () => { chupetas++; SFX.secret(); say('Uma CHUPETA DOURADA secreta! (' + chupetas + '/' + TOTAL_CHUPETAS + ')'); },
+  pickup: () => { chupetas++; SFX.secret(); say('Uma CHUPETA DOURADA secreta! Guardem bem... o bebê vai adorar.'); },
 });
 defineItem('heartC', {
   draw: (it, x, y) => { glow(x, y, '#ff8a80'); ctx.drawImage(SPR.heartC, Math.round(x - 4), Math.round(y - 3)); },
