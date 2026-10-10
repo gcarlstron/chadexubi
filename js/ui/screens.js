@@ -36,6 +36,6 @@ function drawReveal() {
   drawBaby(VW / 2, 146 - (happy ? Math.abs(Math.sin(time * 3)) * 3 : 0), boy ? '#64b5f6' : '#f48fb1', boy ? '#1e88e5' : '#ec407a', happy ? 'happy' : 'cry');
   if (revealT > 1.0) { const k = Math.min(1, (revealT - 1.0) / 0.5), sc = 1 + 0.25 * Math.sin(k * Math.PI) + 0.03 * Math.sin(time * 4); txt(boy ? 'É MENINO!' : 'É MENINA!', VW / 2, 18, 28 * sc, boy ? '#64b5f6' : '#f48fb1', 'center', '#fff'); }
   if (revealT > 2.5) txt(boy ? 'Um pequeno guerreiro de Valhala está a caminho!' : 'Uma pequena guerreira de Lothlórien está a caminho!', VW / 2, 52, 7, '#fff', 'center', '#000');
-  if (revealT > 4 && !happy) { R(VW / 2 + 10, 118, 34, 12, '#fff'); tri(VW / 2 + 12, 130, VW / 2 + 18, 130, VW / 2 + 8, 136, '#fff'); txt('Buááá!', VW / 2 + 27, 120, 6, '#1e88e5', 'center'); }
+  if (revealT > 4 && !happy) { R(VW / 2 + 10, 118, 34, 12, '#fff'); tri(VW / 2 + 12, 130, VW / 2 + 18, 130, VW / 2 + 8, 136, '#fff'); txt('Buááá!', VW / 2 + 27, 120, 6, '#1e88e5', 'center'); if (revealT > 5.5) { R(0, 164, VW, 14, 'rgba(0,0,0,0.55)'); txt('O bebê está chorando porque faltou achar alguma chupeta dourada!', VW / 2, 167, 6, '#fff59d', 'center'); } }
   if (revealT > 4 && happy) for (let i = 0; i < 3; i++) { const t = (time * 0.6 + i / 3) % 1; ctx.globalAlpha = 1 - t; ctx.drawImage(SPR.heart, Math.round(VW / 2 - 12 + i * 10), Math.round(132 - t * 30)); ctx.globalAlpha = 1; }
 }

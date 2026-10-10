@@ -1,7 +1,8 @@
 'use strict';
 // =====================================================================
 //  mechanics/items.js — REGISTRO DE ITENS coletaveis
-//  defineItem(kind, { draw(it, x, y), pickup(it) })
+//  defineItem(kind, { draw(it, x, y), pickup(it) })          -> pega so de encostar
+//  defineItem(kind, { carry: true, name(it), hint, draw })    -> carregavel (ver carry.js)
 //  Itens da fase ficam em LV.items [{kind, x, y, ...}] (x,y = centro em pixels).
 //  Coracoes soltos por inimigos ficam em `drops`.
 // =====================================================================
@@ -11,21 +12,14 @@ function glow(x, y, c) { ctx.globalAlpha = 0.25 + 0.15 * Math.sin(time * 5); ctx
 
 const RELIC_NAMES = ['a Runa de Odin', 'a Lágrima Élfica', 'o Cálice dos Reis'];
 const RELIC_COL = ['#ffd54f', '#4dd0e1', '#ce93d8'];
-let relicCount = 0;
-onLevelLoad(() => { relicCount = 0; });
-
 defineItem('relic', {
+  carry: true, name: it => RELIC_NAMES[it.id], hint: 'Levem até o altar no centro do reino e apertem o botão de ação.',
+  onPick: it => { flags['relic' + it.id] = true; SFX.relic(); },
   draw: (it, x, y) => { glow(x, y, RELIC_COL[it.id]); drawGem(x, y, RELIC_COL[it.id]); },
-  pickup: it => {
-    relicCount++; flags['relic' + it.id] = true; SFX.relic(); shakeT = 0.15;
-    const msg = ['Vocês encontraram ' + RELIC_NAMES[it.id] + '! (' + relicCount + '/3)'];
-    if (relicCount === 3) msg.push('As três relíquias estão reunidas! Levem-nas ao altar no centro e o segredo será revelado!');
-    say(msg);
-  },
 });
 defineItem('key', {
+  carry: true, name: () => 'uma chave', hint: 'Levem até a porta trancada e apertem o botão de ação.',
   draw: (it, x, y) => { glow(x, y, '#ffd54f'); ctx.drawImage(SPR.key, Math.round(x - 5), Math.round(y - 3)); },
-  pickup: () => { keysHeld++; SFX.key(); say('Vocês pegaram uma chave!'); },
 });
 defineItem('chupeta', {
   draw: (it, x, y) => { glow(x, y, '#fff59d'); ctx.drawImage(SPR.chupeta, Math.round(x - 5), Math.round(y - 5)); },
@@ -44,7 +38,7 @@ function updatePickups(dt) {
   for (const h of active()) {
     const b = hb(h);
     for (const it of items) {
-      if (it.taken || !overlap(b, { x: it.x - 9, y: it.y - 7, w: 18, h: 16 })) continue;
+      if (it.taken || ITEM[it.kind].carry || !overlap(b, { x: it.x - 9, y: it.y - 7, w: 18, h: 16 })) continue;
       it.taken = true; burst(it.x, it.y, 20, ['#ffd54f', '#fff'], 70, 0.6);
       ITEM[it.kind].pickup(it);
     }

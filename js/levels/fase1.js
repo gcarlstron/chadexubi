@@ -54,26 +54,36 @@ function buildFase1() {
     towers: { y: 3, fake: true, plazaY: 13 },
     intro: ['Num reino distante, uma nova vida está a caminho...',
       'Duas torres guardam o grande segredo: Valhala, a torre azul, e Lothlórien, a torre rosa.',
-      'Só quem reunir as 3 relíquias sagradas e levá-las ao altar verá qual delas vai se abrir.',
+      'Só quem levar as 3 relíquias sagradas até o altar verá qual delas vai se abrir.',
+      'Para pegar ou colocar um item, ou ler uma placa, usem o botão de ação (A). Cada herói carrega um item por vez!',
       'Gu, o viking, quebra pedras e arbustos com seu machado. De, a elfa, acerta alvos distantes com seu arco.',
       'Dizem também que há chupetas douradas escondidas pelo reino... o bebê vai querer todas!'],
   };
 }
 
 registerLevel(1, () => Object.assign(buildFase1(), {
-  altarPlaced: false,
-  // altar: com as 3 reliquias abre o portao das torres
+  placed: 0,
+  // altar: recebe as reliquias uma a uma (cada heroi carrega uma por vez)
+  receivers: [{
+    kind: 'relic',
+    find: h => { const c = center(h), a = LV.altar; return dist(c.x, c.y, a.x, a.y) < 30 ? a : null; },
+    place(h, it, a) {
+      const lv = LV; lv.placed++; flags['placed' + it.id] = true;
+      SFX.chime(); burst(a.x, a.y - 8, 20, [RELIC_COL[it.id], '#fff'], 70, 0.7);
+      if (lv.placed < a.need) { say(heroName(h) + ' colocou ' + RELIC_NAMES[it.id] + ' no altar! (' + lv.placed + '/3)'); return; }
+      shakeT = 0.4; burst(a.x, a.y - 8, 40, RELIC_COL.concat(['#fff']), 100, 1);
+      lv.respawnPt = [[23, 20], [24, 20]];
+      say(['As três relíquias brilham sobre o altar...', 'Uma voz ecoa pela floresta: "O GRANDE SEGREDO SERÁ REVELADO AGORA!"', 'O portão das Duas Torres se abriu! Corram!'], () => {
+        a.gate.forEach(([x, y]) => M[y][x] = '_'); SFX.door(); shakeT = 0.6; burst(24 * TS, 13 * TS + 8, 30, ['#9a9aa8', '#fff'], 80, 0.7, 60);
+      });
+    },
+  }],
   update() {
     const a = this.altar;
-    if (this.altarPlaced || !anyNear(a.x, a.y, 28)) return;
-    if (relicCount < a.need) { if (cd('altar', 6)) say('Um altar antigo com 3 encaixes vazios... (' + relicCount + '/3 relíquias)'); return; }
-    this.altarPlaced = true; SFX.chime(); shakeT = 0.4; burst(a.x, a.y - 8, 40, RELIC_COL.concat(['#fff']), 100, 1);
-    this.respawnPt = [[23, 20], [24, 20]];
-    say(['As três relíquias brilham sobre o altar...', 'Uma voz ecoa pela floresta: "O GRANDE SEGREDO SERÁ REVELADO AGORA!"', 'O portão das Duas Torres se abriu! Corram!'], () => {
-      a.gate.forEach(([x, y]) => M[y][x] = '_'); SFX.door(); shakeT = 0.6; burst(24 * TS, 13 * TS + 8, 30, ['#9a9aa8', '#fff'], 80, 0.7, 60);
-    });
+    if (this.placed >= a.need || !anyNear(a.x, a.y, 30) || heroes.some(h => h.carry)) return;
+    if (cd('altar', 8)) say('Um altar antigo com 3 encaixes... (' + this.placed + '/3 relíquias) Tragam as relíquias, uma de cada vez.');
   },
-  draw(cx, cy) { if (this.altarPlaced) RELIC_COL.forEach((c, i) => drawGem(23 * TS + 8 + i * 8 - cx, 18 * TS - 1 - cy + Math.sin(time * 3 + i) * 1.5, c)); },
+  draw(cx, cy) { RELIC_COL.forEach((c, i) => { if (flags['placed' + i]) drawGem(23 * TS + 8 + i * 8 - cx, 18 * TS - 1 - cy + Math.sin(time * 3 + i) * 1.5, c); }); },
   // fim do suspense: as torres eram falsas!
   onFakeTowers() {
     const cx = 24 * TS, cy = 7 * TS;

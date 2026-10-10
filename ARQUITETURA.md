@@ -9,7 +9,7 @@ O jogo é feito em JavaScript puro com Canvas, sem build e sem dependências. El
 | `js/core/` | `util.js` (constantes, utilitários, leitura do segredo), `canvas.js` (tela e buffer 320x180), `audio.js` (SFX e músicas), `input.js` (teclado/controle por jogador) |
 | `js/gfx/` | `sprites.js` (pixel art em texto), `tiles.js` (imagens dos tiles por tema), `draw.js` (primitivas, torres, portal, bebê e texto nítido) |
 | `js/world/` | `state.js` (estado global e da fase, partículas, timers), `tiles.js` (**registro de tiles**), `collision.js`, `level.js` (Grid, **registro de fases**, carga e portal) |
-| `js/mechanics/` | Uma mecânica por arquivo: `breakables` (pedra/parede/arbusto), `crystals` (pontes, sequência, temporizado), `levers` (alavanca + combo), `plates` (placas e grades), `locks` (chaves), `signs` (avisos), `items` (**registro de itens**) |
+| `js/mechanics/` | Uma mecânica por arquivo: `breakables` (pedra/parede/arbusto), `crystals` (pontes, sequência, temporizado), `levers` (alavanca + combo), `plates` (placas e grades), `carry` (**itens carregáveis + receptores**), `locks` (portas que recebem chaves), `signs` (avisos lidos com o botão de ação), `items` (**registro de itens**) |
 | `js/entities/` | `heroes.js` (Gu e De: movimento, ataques, troca/chamar), `enemies.js` (**registro de inimigos** + IA padrão), `boss.js` (Chefe Orc), `crow.js` (Corvo) |
 | `js/story/` | `dialog.js` (caixa de diálogo), `cutscene.js` (roteiro de cenas + pergaminho), `towers.js` (suspense, porta e revelação) |
 | `js/levels/` | `fase1.js`, `fase2.js` e `fase3.js`: o mapa, os dados e as cenas de cada fase |
@@ -63,6 +63,18 @@ Em `js/mechanics/items.js`:
 ```js
 defineItem('pocao', { draw: (it, x, y) => {...}, pickup: it => {...} });
 ```
+
+### Item carregável + receptor (ex.: chave → porta)
+
+Itens com `carry: true` não vão para inventário: o herói pega com o **botão de ação**, leva acima da cabeça (um por herói) e só ele pode colocar no receptor.
+
+```js
+defineItem('gema', { carry: true, name: () => 'uma gema', hint: 'Levem até o pedestal.', draw: (it, x, y) => {...} });
+defineReceiver({ kind: 'gema', find: h => /* alvo perto do herói ou null */, place: (h, item, alvo) => {...} });
+// ou, só numa fase: LV.receivers = [{ kind, find, place }]
+```
+
+Botão de ação (A/B, Espaço, K, Enter), em ordem de prioridade: colocar/soltar o item carregado → pegar item → ler placa → atacar.
 
 ### Nova fase
 

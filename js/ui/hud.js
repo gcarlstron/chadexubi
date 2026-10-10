@@ -5,8 +5,7 @@
 function drawHUD() {
   for (let i = 0; i < maxH; i++) ctx.drawImage(i < hearts ? SPR.heart : SPR.heartE, 4 + i * 9, 4);
   // chupetas NAO aparecem no HUD (segredo: so se descobre no final)
-  if (LV.n > 1) { ctx.drawImage(SPR.key, 4, 15); txt('x' + keysHeld, 16, 14, 6, '#ffd54f'); }
-  if (LV.n === 1) for (let i = 0; i < 3; i++) { const x = VW / 2 - 18 + i * 14; R(x - 1, 2, 12, 12, '#101833'); R(x, 3, 10, 10, '#26305a'); if (flags['relic' + i]) drawGem(x + 5, 8, RELIC_COL[i]); }
+  if (LV.n === 1) for (let i = 0; i < 3; i++) { const x = VW / 2 - 18 + i * 14; R(x - 1, 2, 12, 12, '#101833'); R(x, 3, 10, 10, '#26305a'); if (flags['placed' + i]) drawGem(x + 5, 8, RELIC_COL[i]); }
   if (mode === 1) {
     const h = L(), f = F();
     R(VW - 64, 2, 62, 20, 'rgba(16,24,51,0.85)'); R(VW - 64, 2, 62, 1, '#e8e8ff');

@@ -114,7 +114,11 @@ function moveHero(h, c, dt) {
     else h.walk = 0;
   } else h.walk = 0;
   h.cd -= dt; h.atk -= dt;
-  if (c.atkP && inputLock <= 0 && h.cd <= 0) { const A = HERO_ATTACK[h.key]; h.atk = A.anim; h.cd = A.cooldown; A.run(h); }
+  if (c.atkP && inputLock <= 0) {
+    // botao de acao: carregar/colocar item > ler placa > atacar
+    if (tryCarryAction(h) || tryReadSign(h)) { h.cd = 0.25; }
+    else if (h.cd <= 0) { const A = HERO_ATTACK[h.key]; h.atk = A.anim; h.cd = A.cooldown; A.run(h); }
+  }
   if (c.swP && inputLock <= 0) { if (mode === 1) switchHero(); else callPartner(h); }
 }
 function followLeader(dt) {
@@ -150,6 +154,8 @@ function drawHero(h, sx, sy) {
     const ax = h.face > 0 ? sx + 13 : sx; ctx.strokeStyle = '#8d6e63'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(ax + 1, sy + 9 - bob, 5, h.face > 0 ? -1.3 : 1.84, h.face > 0 ? 1.3 : 4.44); ctx.stroke();
   }
   if (h.anchored) R(sx + 6, sy - 6, 4, 4, '#ffd54f');
+  drawCarried(h, sx, sy - bob);
+  if (active().includes(h) && canInteract(h) && state === 'play' && !dlg) { const by = sy - (h.carry ? 22 : 12); R(sx + 4, by, 9, 8, '#fff'); R(sx + 4, by + 8, 9, 1, '#9e9e9e'); txt('A', sx + 8.5, by + 1, 6, '#1a1a2e', 'center'); }
   if (mode === 2) tri(sx + 5, sy - 5, sx + 11, sy - 5, sx + 8, sy - 2, h.key === 'gu' ? '#90caf9' : '#f8bbd0');
 }
 function drawArrows(cx, cy) {

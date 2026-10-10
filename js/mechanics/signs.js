@@ -1,13 +1,17 @@
 'use strict';
 // =====================================================================
-//  mechanics/signs.js — placas de aviso: chegar perto mostra LV.signs['x,y']
+//  mechanics/signs.js — placas de aviso: chegar perto e apertar o botao de
+//  acao (A/B, Espaco, K) para ler LV.signs['x,y']. Perto da placa aparece "A".
 // =====================================================================
-let signNear = {};
-onLevelLoad(() => { signNear = {}; });
-function updateSigns() {
+function signInFront(h) {
+  const c = center(h);
   for (const k in LV.signs || {}) {
-    const [sx, sy] = unkey(k), near = anyNear(sx * TS + 8, sy * TS + 8, 22);
-    if (near && !signNear[k]) say(LV.signs[k]);
-    signNear[k] = near;
+    const [sx, sy] = unkey(k);
+    if (dist(c.x, c.y, sx * TS + 8, sy * TS + 8) < 22) return k;
   }
+  return null;
+}
+function tryReadSign(h) {
+  const k = signInFront(h); if (!k) return false;
+  SFX.sw(); say(LV.signs[k]); return true;
 }

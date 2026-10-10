@@ -16,7 +16,6 @@ function startGame() {
 }
 
 function updateTriggers(dt) {
-  updateSigns();
   updateTimed(dt);
   updateLocks();
   if (updatePortals()) return;
@@ -100,7 +99,7 @@ loadLevel(1); playSong(null); banner = null;
 // ganchos para testes automatizados (console do navegador)
 window.__game = {
   get state() { return state; }, get LV() { return LV; }, heroes, get items() { return items; }, get enemies() { return enemies; }, get M() { return M; },
-  get lead() { return lead; }, get dlg() { return dlg; }, get flags() { return flags; }, get keys() { return keysHeld; }, get chupetas() { return chupetas; },
+  get lead() { return lead; }, get dlg() { return dlg; }, get flags() { return flags; }, get carry() { return heroes.map(h => h.carry && h.carry.kind); }, get chupetas() { return chupetas; },
   get boss() { return boss; }, get crystalOn() { return crystalOn; }, get mode() { return mode; }, get hearts() { return hearts; }, RESULT, loadLevel, nextLevel,
   setMenu(i) { menuSel = i; }, solidAt,
 };
