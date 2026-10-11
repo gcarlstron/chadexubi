@@ -51,7 +51,9 @@ function readInput() {
     const padC = pads[0], kbC = merge(kbRead(KB_ALL), ...(pads.slice(1)));
     if (padHero === 0) { c0 = padC; c1 = kbC; } else { c0 = kbC; c1 = padC; }
   } else { c0 = kbRead(KB_A); c1 = kbRead(KB_B); }
-  [c0, c1].forEach((c, i) => { const p = hprev[i]; hin[i] = Object.assign({}, c, { atkP: c.atk && !p.atk, swP: c.sw && !p.sw, stP: c.st && !p.st }); hprev[i] = { atk: c.atk, sw: c.sw, st: c.st }; });
+  [c0, c1].forEach((c, i) => { const p = hprev[i]; hin[i] = Object.assign({}, c, { atkP: c.atk && !p.atk, swP: c.sw && !p.sw, stP: c.st && !p.st }); });
+  // 1P: o "anterior" e do dispositivo, nao do heroi — senao o heroi que acabou de assumir ve o botao segurado como novo e destroca
+  (mode === 1 ? [all, all] : [c0, c1]).forEach((c, i) => { hprev[i] = { atk: c.atk, sw: c.sw, st: c.st }; });
   ui.atkP = all.atk && !uiPrev.atk; ui.stP = all.st && !uiPrev.st; ui.upP = all.my < 0 && !uiPrev.up; ui.downP = all.my > 0 && !uiPrev.down;
   uiPrev.atk = all.atk; uiPrev.st = all.st; uiPrev.up = all.my < 0; uiPrev.down = all.my > 0;
   for (const k in latch) delete latch[k];
